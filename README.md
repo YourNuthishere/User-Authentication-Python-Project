@@ -31,7 +31,7 @@ This is a Python-based User Authentication System built using Tkinter, providing
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/user-authentication-system.git
+   git clone [https://github.com/your-username/user-authentication-system.git](https://github.com/YourNuthishere/User-Authentication-Python-Project.git)
    ```
 
 2. Install required dependencies:
@@ -62,14 +62,5 @@ python behind.py
 - The `users_data.txt` file stores unencrypted credentials and should be kept secure
 - Always use this application in a controlled, secure environment
 
-## Potential Improvements
-- Implement two-factor authentication
-- Add email verification
-- Create password strength meter
-- Implement account lockout after multiple failed attempts
 
-## License
-[Specify your license here]
 
-## Disclaimer
-This is a basic authentication system and should not be used in production without further security enhancements.
