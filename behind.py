@@ -52,9 +52,28 @@ class UserManagement:
     def hash_password(password):
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-    def save_unencrypted_data(self, username, password):
-        with open(self.FORGOTTEN_PASSWORD_FILE, 'a') as file:
-            file.write(f"{username}|{password}\n")
+    def update_unencrypted_data(self, username, new_password):
+        # Read the entire file
+        with open(self.FORGOTTEN_PASSWORD_FILE, 'r') as file:
+            lines = file.readlines()
+
+        # Update the specific user's password
+        updated_lines = []
+        user_found = False
+        for line in lines:
+            if line.startswith(f"{username}|"):
+                updated_lines.append(f"{username}|{new_password}\n")
+                user_found = True
+            else:
+                updated_lines.append(line)
+
+        # If user not found, append new entry
+        if not user_found:
+            updated_lines.append(f"{username}|{new_password}\n")
+
+        # Write back to the file
+        with open(self.FORGOTTEN_PASSWORD_FILE, 'w') as file:
+            file.writelines(updated_lines)
 
 class Dashboard(tk.Frame):
     def __init__(self, parent, controller):
@@ -137,7 +156,7 @@ class Registration(tk.Frame):
         hashed_password = self.user_manager.hash_password(password)
         user_data[username] = hashed_password
         self.user_manager.save_user_data(user_data)
-        self.user_manager.save_unencrypted_data(username, password)
+        self.user_manager.update_unencrypted_data(username, password)
 
         messagebox.showinfo("Success", "Account registered successfully!")
         self.controller.show_frame("LoginPage")
@@ -207,8 +226,13 @@ class Login(tk.Frame):
 
         new_password = self.generate_random_password()
         messagebox.showinfo("New Password", f"Your new password is: {new_password}")
+        
+        # Update encrypted user data
         user_data[username] = self.user_manager.hash_password(new_password)
         self.user_manager.save_user_data(user_data)
+        
+        # Update unencrypted user data
+        self.user_manager.update_unencrypted_data(username, new_password)
 
     @staticmethod
     def generate_random_password():
